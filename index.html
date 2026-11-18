@@ -1,0 +1,493 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Galería de Obras</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<style>
+/* Concepto: tablones de madera oscura como fondo fijo; cada obra es un panel de vidrio líquido con su QR sobre un azulejo claro para que escanee bien. */
+:root {
+  --wood-deep: #24160d;
+  --wood: #3a2415;
+  --wood-warm: #5b3a22;
+  --edge: rgba(255, 236, 210, 0.30);
+  --ink: #f7ede1;
+  --ink-dim: rgba(247, 237, 225, 0.72);
+  --honey: #e9b977;
+  --paper: #fbf7f0;
+  --qr-ink: #1d130b;
+  --font-display: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  background: var(--wood);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-block: 0 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  min-height: 100vh;
+}
+
+/* Banda bajo la barra del sistema */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--wood-deep);
+}
+
+/* Madera: tablones verticales, veta y viñeta */
+.wood {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--wood);
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 200, 140, 0.16), transparent 60%),
+    radial-gradient(140% 100% at 50% 100%, rgba(0, 0, 0, 0.55), transparent 65%),
+    repeating-linear-gradient(90deg,
+      rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 214px,
+      rgba(0, 0, 0, 0.42) 215px, rgba(255, 215, 165, 0.07) 217px,
+      rgba(0, 0, 0, 0) 218px, rgba(0, 0, 0, 0) 236px),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='480' height='480'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9 0.011' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.05  0 0 0 0 0.02  0 0 0 1.5 -0.55'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>"),
+    linear-gradient(90deg, var(--wood-warm), var(--wood) 40%, var(--wood-warm) 70%, var(--wood));
+  background-size: auto, auto, 236px 100%, 480px 480px, auto;
+}
+
+/* Vidrio líquido */
+.glass {
+  position: relative;
+  background: linear-gradient(145deg, rgba(255, 240, 220, 0.17), rgba(255, 240, 220, 0.05));
+  border: 1px solid var(--edge);
+  border-radius: 26px;
+  -webkit-backdrop-filter: blur(20px) saturate(165%);
+  backdrop-filter: blur(20px) saturate(165%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 22px 44px -22px rgba(0, 0, 0, 0.7);
+}
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 55% at 18% 0%, rgba(255, 255, 255, 0.20), transparent 60%);
+  pointer-events: none;
+}
+.glass > * { position: relative; z-index: 1; }
+
+/* Barra de menú */
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  padding-block: 12px;
+  display: flex;
+  justify-content: center;
+}
+.bar-in {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 640px;
+  padding: 6px 8px 6px 22px;
+  border-radius: 999px;
+}
+.brand {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.chips {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+.chips a {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid transparent;
+  background: rgba(255, 240, 220, 0.12);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.chips a:hover { background: rgba(233, 185, 119, 0.28); border-color: var(--edge); color: #fff; }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--honey);
+  outline-offset: 3px;
+}
+
+@media (max-width: 559px) {
+  .brand { display: none; }
+  .bar-in { padding: 6px; }
+}
+
+/* Línea de avance de lectura */
+.progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: env(safe-area-inset-top, 0px);
+  height: 4px;
+  z-index: 30;
+  background: rgba(255, 240, 220, 0.10);
+}
+.progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  background: linear-gradient(90deg, #c98f4e, var(--honey), #ffe2b0);
+  box-shadow: 0 0 10px rgba(233, 185, 119, 0.7);
+}
+
+main { max-width: 1120px; margin-inline: auto; }
+
+.hero { padding-block: 28px 30px; }
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--honey);
+}
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(40px, 7.5vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+h1 em { color: var(--honey); font-style: normal; }
+.lead {
+  margin: 16px 0 0;
+  max-width: 46ch;
+  color: var(--ink-dim);
+  font-size: 16px;
+}
+
+/* Rejilla */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+@media (min-width: 560px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 980px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  min-width: 0;
+  scroll-margin-top: 96px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: transform 0.25s ease; }
+  .card:hover { transform: translateY(-3px); }
+}
+.card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+.num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--honey);
+  font-variant-numeric: tabular-nums;
+}
+.host {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+.card h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.authors { margin: -6px 0 0; font-size: 13px; color: var(--ink-dim); }
+
+.qr-btn {
+  display: block;
+  width: min(100%, 220px);
+  margin-inline: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 18px;
+  cursor: zoom-in;
+  color: inherit;
+  font: inherit;
+}
+.qr {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 12px;
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--qr-ink);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+.qr canvas, .qr img { width: 100%; height: auto; max-width: 100%; display: block; }
+.qr.qr-missing { font-size: 12px; text-align: center; }
+
+.open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--edge);
+  background: rgba(255, 240, 220, 0.10);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+.open:hover { background: rgba(233, 185, 119, 0.28); }
+
+/* QR ampliado */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(20, 11, 5, 0.62);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.modal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 520px);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 18px;
+  background: linear-gradient(145deg, rgba(70, 45, 28, 0.88), rgba(40, 24, 14, 0.9));
+}
+.modal-card h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 25px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.modal-card .authors { margin: 0; }
+.modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.modal-actions > * { flex: 1 1 140px; cursor: pointer; font-family: inherit; }
+.modal[hidden] { display: none; }
+#m-qr { width: min(100%, 62vh); margin-inline: auto; }
+</style>
+
+<div class="wood" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header class="bar">
+  <div class="bar-in glass">
+    <span class="brand">Galería</span>
+    <nav class="chips" id="chips" aria-label="Ir a una obra"></nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow" id="count">Obras</p>
+    <h1>Galería <em>de obras</em></h1>
+    <p class="lead">Escanea el código de cada obra con la cámara del celular o abre el enlace para entrar a ella. Toca un código para verlo en grande.</p>
+  </section>
+
+  <ul class="grid" id="grid"></ul>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="modal-card glass">
+    <p class="eyebrow" id="m-num"></p>
+    <h2 id="m-title"></h2>
+    <p class="authors" id="m-authors"></p>
+    <div class="qr" id="m-qr" role="img"></div>
+    <div class="modal-actions">
+      <a class="open" id="m-open" href="#" target="_blank" rel="noopener noreferrer">Abrir obra</a>
+      <button class="open" id="m-close" type="button">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+  var INFO = 'Accede para más información';
+  var OBRAS = [
+    { n: 1, t: 'El atardecer', u: 'https://user12345-rgb.github.io/exposicion-atardecer/' },
+    { n: 2, t: 'GoodFellas: Una historia de lealtad y familia', u: 'https://www.canva.com/design/DAHbMH95CDg/jhKmz3T2DFfjD2bhOFbaxA/edit' },
+    { n: 3, t: 'Grandes metas grandes amigos', u: 'https://sites.google.com/view/galerafotogrficaconalep2027/página-principal' },
+    { n: 4, t: 'La fuerza de la unión', u: 'https://fotografia-artistica.netlify.app' },
+    { n: 5, t: 'Genesis', u: 'https://gnosisapp.github.io/genesisobra/#texto' },
+    { n: 6, t: 'Distintas miradas; una misma humanidad.', u: 'https://philosophical-link-qr.netlify.app' },
+    { n: 7, t: 'La triste realidad.', u: 'https://stalwart-griffin-b3bd4e.netlify.app' },
+    { n: 8, t: 'Los asustados', u: 'https://muse.ai/s/los-asustados-xoq6x0xkxpxlxyxtxtu/gAcTNpU8ZEx1_znmLpRJ4fIyygGgaWRdP7Ag_tWRSWY' }
+  ];
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function host(u) {
+    try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
+  }
+  function drawQR(el, url, size) {
+    el.textContent = '';
+    el.classList.remove('qr-missing');
+    if (typeof QRCode === 'undefined') {
+      el.classList.add('qr-missing');
+      el.textContent = 'Código no disponible. Usa el botón Abrir obra.';
+      return;
+    }
+    try {
+      new QRCode(el, {
+        text: encodeURI(url),
+        width: size,
+        height: size,
+        colorDark: '#1d130b',
+        colorLight: '#fbf7f0',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch (e) {
+      el.classList.add('qr-missing');
+      el.textContent = 'Código no disponible. Usa el botón Abrir obra.';
+    }
+  }
+
+  var grid = document.getElementById('grid');
+  var chips = document.getElementById('chips');
+  document.getElementById('count').textContent = OBRAS.length + ' obras';
+
+  OBRAS.forEach(function (o) {
+    var chip = document.createElement('a');
+    chip.href = '#obra-' + o.n;
+    chip.textContent = o.n;
+    chip.setAttribute('aria-label', 'Ir a la obra ' + o.n + ': ' + o.t);
+    chip.title = o.t;
+    chips.appendChild(chip);
+
+    var li = document.createElement('li');
+    li.className = 'card glass';
+    li.id = 'obra-' + o.n;
+    li.innerHTML =
+      '<div class="card-top"><span class="num">' + o.n + '</span><span class="host">' + esc(host(o.u)) + '</span></div>' +
+      '<h2>' + esc(o.t) + '</h2>' +
+      '<p class="authors">' + INFO + '</p>' +
+      '<button class="qr-btn" type="button" aria-label="Ampliar el código QR de ' + esc(o.t) + '"><div class="qr" role="img" aria-label="Código QR de ' + esc(o.t) + '"></div></button>' +
+      '<a class="open" href="' + esc(o.u) + '" target="_blank" rel="noopener noreferrer">Abrir obra</a>';
+    grid.appendChild(li);
+
+    drawQR(li.querySelector('.qr'), o.u, 360);
+    li.querySelector('.qr-btn').addEventListener('click', function () { openModal(o); });
+  });
+
+  var modal = document.getElementById('modal');
+  var lastFocus = null;
+  function openModal(o) {
+    lastFocus = document.activeElement;
+    document.getElementById('m-num').textContent = 'Obra ' + o.n;
+    document.getElementById('m-title').textContent = o.t;
+    document.getElementById('m-authors').textContent = INFO;
+    var open = document.getElementById('m-open');
+    open.href = o.u;
+    var box = document.getElementById('m-qr');
+    box.setAttribute('aria-label', 'Código QR de ' + o.t);
+    drawQR(box, o.u, 520);
+    modal.hidden = false;
+    document.getElementById('m-close').focus();
+  }
+  function closeModal() {
+    modal.hidden = true;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.getElementById('m-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.hidden) closeModal();
+  });
+
+  var bar = document.getElementById('progress');
+  var ticking = false;
+  function updateProgress() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    bar.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(updateProgress); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  updateProgress();
+})();
+</script>
+
+</body></html>
