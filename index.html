@@ -255,10 +255,17 @@ h1 em { color: var(--honey); font-style: normal; }
   font-size: 21px;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  min-height: calc(2 * 1.15em);
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
 .authors { margin: -6px 0 0; font-size: 13px; color: var(--ink-dim); }
+
+/* El QR y los botones van pegados abajo: así en PC todas las tarjetas
+   de una fila quedan alineadas aunque los títulos tengan 1 o 2 líneas. */
+.card .qr-btn { margin-top: auto; }
+.card .open { width: 100%; }
+.dl-btn { cursor: pointer; font-family: inherit; background: rgba(233, 185, 119, 0.16); }
 
 .qr-btn {
   display: block;
@@ -370,6 +377,7 @@ h1 em { color: var(--honey); font-style: normal; }
     <div class="qr" id="m-qr" role="img"></div>
     <div class="modal-actions">
       <a class="open" id="m-open" href="#" target="_blank" rel="noopener noreferrer">Abrir obra</a>
+      <button class="open dl-btn" id="m-dl" type="button">Descargar QR</button>
       <button class="open" id="m-close" type="button">Cerrar</button>
     </div>
   </div>
@@ -421,6 +429,28 @@ h1 em { color: var(--honey); font-style: normal; }
     }
   }
 
+  function qrDataURL(box) {
+    var c = box.querySelector('canvas');
+    if (c) { try { return c.toDataURL('image/png'); } catch (e) {} }
+    var im = box.querySelector('img');
+    if (im && im.src) return im.src;
+    return null;
+  }
+  function slug(s) {
+    return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'obra';
+  }
+  function downloadQR(box, o) {
+    var data = qrDataURL(box);
+    if (!data) { alert('El código QR aún no está listo. Inténtalo de nuevo en un momento.'); return; }
+    var a = document.createElement('a');
+    a.href = data;
+    a.download = 'QR-obra-' + o.n + '-' + slug(o.t) + '.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
   var grid = document.getElementById('grid');
   var chips = document.getElementById('chips');
   document.getElementById('count').textContent = OBRAS.length + ' obras';
@@ -441,17 +471,21 @@ h1 em { color: var(--honey); font-style: normal; }
       '<h2>' + esc(o.t) + '</h2>' +
       '<p class="authors">' + INFO + '</p>' +
       '<button class="qr-btn" type="button" aria-label="Ampliar el código QR de ' + esc(o.t) + '"><div class="qr" role="img" aria-label="Código QR de ' + esc(o.t) + '"></div></button>' +
-      '<a class="open" href="' + esc(o.u) + '" target="_blank" rel="noopener noreferrer">Abrir obra</a>';
+      '<a class="open" href="' + esc(o.u) + '" target="_blank" rel="noopener noreferrer">Abrir obra</a>' +
+      '<button class="open dl-btn" type="button">Descargar QR</button>';
     grid.appendChild(li);
 
     drawQR(li.querySelector('.qr'), o.u, 360);
     li.querySelector('.qr-btn').addEventListener('click', function () { openModal(o); });
+    li.querySelector('.dl-btn').addEventListener('click', function () { downloadQR(li.querySelector('.qr'), o); });
   });
 
   var modal = document.getElementById('modal');
   var lastFocus = null;
+  var modalObra = null;
   function openModal(o) {
     lastFocus = document.activeElement;
+    modalObra = o;
     document.getElementById('m-num').textContent = 'Obra ' + o.n;
     document.getElementById('m-title').textContent = o.t;
     document.getElementById('m-authors').textContent = INFO;
@@ -468,6 +502,9 @@ h1 em { color: var(--honey); font-style: normal; }
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   document.getElementById('m-close').addEventListener('click', closeModal);
+  document.getElementById('m-dl').addEventListener('click', function () {
+    if (modalObra) downloadQR(document.getElementById('m-qr'), modalObra);
+  });
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !modal.hidden) closeModal();
