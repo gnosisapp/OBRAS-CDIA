@@ -109,62 +109,9 @@ body::before {
 }
 .glass > * { position: relative; z-index: 1; }
 
-/* Barra de menú */
-.bar {
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  z-index: 20;
-  padding-block: 12px;
-  display: flex;
-  justify-content: center;
-}
-.bar-in {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  max-width: 640px;
-  padding: 6px 8px 6px 22px;
-  border-radius: 999px;
-}
-.brand {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.chips {
-  display: flex;
-  flex: 1;
-  gap: 4px;
-  min-width: 0;
-}
-.chips a {
-  flex: 1 1 0;
-  min-width: 0;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  color: var(--ink);
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
-  border: 1px solid transparent;
-  background: rgba(255, 240, 220, 0.12);
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
-.chips a:hover { background: rgba(233, 185, 119, 0.28); border-color: var(--edge); color: #fff; }
 a:focus-visible, button:focus-visible {
   outline: 2px solid var(--honey);
   outline-offset: 3px;
-}
-
-@media (max-width: 559px) {
-  .brand { display: none; }
-  .bar-in { padding: 6px; }
 }
 
 /* Línea de avance de lectura */
@@ -244,18 +191,9 @@ h1 em { color: var(--honey); font-style: normal; }
 .card-top {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   min-width: 0;
-}
-.num {
-  font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--honey);
-  font-variant-numeric: tabular-nums;
 }
 .host {
   min-width: 0;
@@ -383,8 +321,7 @@ h1 em { color: var(--honey); font-style: normal; }
 .modal { overscroll-behavior: contain; }
 .modal-card { overscroll-behavior: contain; touch-action: pan-y; }
 html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
-.m-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.m-head .eyebrow { margin: 0; }
+.m-head { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 .m-nav { display: flex; gap: 8px; }
 .nav-btn {
   width: 44px;
@@ -441,16 +378,8 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
 <div class="wood" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
-<header class="bar">
-  <div class="bar-in glass">
-    <span class="brand">Galería</span>
-    <nav class="chips" id="chips" aria-label="Ir a una obra"></nav>
-  </div>
-</header>
-
 <main>
   <section class="hero">
-    <p class="eyebrow" id="count">Obras</p>
     <h1>Galería <em>de obras</em></h1>
     <p class="lead">Escanea el código de cada obra con la cámara del celular o abre el enlace para entrar a ella. Toca un código para verlo en grande.</p>
   </section>
@@ -461,7 +390,6 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
   <div class="modal-card glass" id="m-card">
     <div class="m-head">
-      <p class="eyebrow" id="m-num"></p>
       <div class="m-nav">
         <button class="nav-btn" id="m-prev" type="button" aria-label="Obra anterior"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         <button class="nav-btn" id="m-next" type="button" aria-label="Obra siguiente"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -541,7 +469,7 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
       return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'obra';
     }
-    function fileName(o) { return 'QR-obra-' + o.n + '-' + slug(o.t) + '.png'; }
+    function fileName(o) { return 'QR-' + slug(o.t) + '.png'; }
 
     /* Aviso breve */
     var toastEl = document.getElementById('toast');
@@ -734,22 +662,13 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
     }
 
     var grid = document.getElementById('grid');
-    var chips = document.getElementById('chips');
-    document.getElementById('count').textContent = OBRAS.length + ' obras';
 
     OBRAS.forEach(function (o) {
-      var chip = document.createElement('a');
-      chip.href = '#obra-' + o.n;
-      chip.textContent = o.n;
-      chip.setAttribute('aria-label', 'Ir a la obra ' + o.n + ': ' + o.t);
-      chip.title = o.t;
-      chips.appendChild(chip);
-
       var li = document.createElement('li');
       li.className = 'card glass';
       li.id = 'obra-' + o.n;
       li.innerHTML =
-        '<div class="card-top"><span class="num">' + o.n + '</span><span class="host">' + esc(host(o.u)) + '</span></div>' +
+        '<div class="card-top"><span class="host">' + esc(host(o.u)) + '</span></div>' +
         '<h2>' + esc(o.t) + '</h2>' +
         '<div class="authors">' + authorsHTML(o) + '</div>' +
         '<button class="qr-btn" type="button" aria-label="Ampliar el código QR de ' + esc(o.t) + '"><div class="qr" role="img" aria-label="Código QR de ' + esc(o.t) + '"></div></button>' +
@@ -770,7 +689,6 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
 
     function showInModal(o, dir) {
       modalObra = o;
-      document.getElementById('m-num').textContent = 'Obra ' + o.n + ' de ' + OBRAS.length;
       document.getElementById('m-title').textContent = o.t;
       document.getElementById('m-authors').innerHTML = authorsHTML(o);
       document.getElementById('m-open').href = o.u;
