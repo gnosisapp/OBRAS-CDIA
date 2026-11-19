@@ -1,12 +1,12 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Galería de Obras</title>
-<meta name="description" content="Galería de obras: escanea el código QR de cada obra con la cámara del celular o abre el enlace para entrar a ella.">
+<meta name="description" content="CDIA 305 · Galería de obras: escanea el código QR de cada obra con la cámara del celular o abre el enlace para entrar a ella.">
 <meta name="theme-color" content="#24160d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2324160d'/%3E%3Crect x='14' y='14' width='16' height='16' rx='3' fill='%23e9b977'/%3E%3Crect x='34' y='14' width='16' height='16' rx='3' fill='%23e9b977'/%3E%3Crect x='14' y='34' width='16' height='16' rx='3' fill='%23e9b977'/%3E%3Crect x='36' y='36' width='12' height='12' rx='2' fill='%23fbf7f0'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_MX">
 <meta property="og:title" content="Galería de Obras">
-<meta property="og:description" content="Galería de obras: escanea el código QR de cada obra con la cámara del celular o abre el enlace para entrar a ella.">
+<meta property="og:description" content="CDIA 305 · Galería de obras: escanea el código QR de cada obra con la cámara del celular o abre el enlace para entrar a ella.">
 <meta property="og:url" content="https://gnosisapp.github.io/OBRAS-CDIA/">
 <meta property="og:image" content="https://gnosisapp.github.io/OBRAS-CDIA/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -15,7 +15,7 @@
 <meta property="og:image:alt" content="Galería de obras: escanea el código de cada obra.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Galería de Obras">
-<meta name="twitter:description" content="Galería de obras: escanea el código QR de cada obra con la cámara del celular o abre el enlace para entrar a ella.">
+<meta name="twitter:description" content="CDIA 305 · Galería de obras: escanea el código QR de cada obra con la cámara del celular o abre el enlace para entrar a ella.">
 <meta name="twitter:image" content="https://gnosisapp.github.io/OBRAS-CDIA/og.jpg">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -173,6 +173,30 @@ h1 em { color: var(--honey); font-style: normal; }
 }
 @media (min-width: 560px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 980px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Separador elegante entre obras: línea dorada con rombo al centro */
+.sep {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 4px;
+  list-style: none;
+}
+.sep::before, .sep::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(233, 185, 119, 0.55), transparent);
+}
+.sep i {
+  width: 7px;
+  height: 7px;
+  background: var(--honey);
+  transform: rotate(45deg);
+  border-radius: 1px;
+  flex: none;
+}
 
 .card {
   display: flex;
@@ -380,6 +404,7 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
 
 <main>
   <section class="hero">
+    <p class="eyebrow">CDIA 305</p>
     <h1>Galería <em>de obras</em></h1>
     <p class="lead">Escanea el código de cada obra con la cámara del celular o abre el enlace para entrar a ella. Toca un código para verlo en grande.</p>
   </section>
@@ -427,6 +452,9 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
       { n: 8, t: 'Los asustados', u: 'https://muse.ai/s/los-asustados-xoq6x0xkxpxlxyxtxtu/gAcTNpU8ZEx1_znmLpRJ4fIyygGgaWRdP7Ag_tWRSWY', a: ['Santiago Uribe Olvera', 'Diego Isaac Pérez Villegas', 'Carlos Miguel Pérez Vázquez'] },
       { n: 9, t: 'ELLOS', u: 'https://curious-lily-2d78e8.netlify.app', a: ['Mario Sierra Parra', 'Mateo Suárez Moreno', 'Joshua Isauro Hernandez Ayala', 'Fernanda Yazmin Gutierrez Vidal'] }
     ];
+
+    // Orden alfabético por título (no es clasificación, solo orden).
+    OBRAS.sort(function (a, b) { return a.t.localeCompare(b.t, 'es', { sensitivity: 'base' }); });
 
     function authorsHTML(o) {
       return '<span class="a-label">Autores</span>' + o.a.map(function (n) {
@@ -679,6 +707,29 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
       drawQR(li.querySelector('.qr'), o.u, 360);
       li.querySelector('.qr-btn').addEventListener('click', function () { openModal(o); });
       li.querySelector('.dl-btn').addEventListener('click', function () { downloadQR(o); });
+    });
+
+    // Separador elegante entre obras: en móvil va entre cada obra;
+    // en tablet y PC, entre cada fila de la rejilla.
+    function layoutSeparators() {
+      grid.querySelectorAll('.sep').forEach(function (s) { s.remove(); });
+      var cols = getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length || 1;
+      var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+      cards.forEach(function (li, idx) {
+        if ((idx + 1) % cols === 0 && idx !== cards.length - 1) {
+          var sep = document.createElement('li');
+          sep.className = 'sep';
+          sep.setAttribute('aria-hidden', 'true');
+          sep.innerHTML = '<i></i>';
+          li.after(sep);
+        }
+      });
+    }
+    layoutSeparators();
+    var sepTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(sepTimer);
+      sepTimer = setTimeout(layoutSeparators, 150);
     });
 
     var modal = document.getElementById('modal');
