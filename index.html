@@ -109,14 +109,18 @@ body::before {
 }
 .glass > * { position: relative; z-index: 1; }
 
-/* Barra de menú */
+/* Barra de menú: banda opaca de ancho completo para que el contenido
+   no se vea a través de ella ni por encima al hacer scroll. */
 .bar {
   position: sticky;
-  top: env(safe-area-inset-top, 0px);
+  top: 0;
   z-index: 20;
-  padding-block: 12px;
+  margin-inline: -16px;
+  padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
   display: flex;
   justify-content: center;
+  background: var(--wood-deep);
 }
 .bar-in {
   display: flex;
@@ -126,6 +130,7 @@ body::before {
   max-width: 640px;
   padding: 6px 8px 6px 22px;
   border-radius: 999px;
+  background: linear-gradient(145deg, rgba(70, 45, 28, 0.97), rgba(40, 24, 14, 0.97));
 }
 .brand {
   font-family: var(--font-display);
@@ -278,7 +283,14 @@ h1 em { color: var(--honey); font-style: normal; }
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
-.authors { margin: -6px 0 0; font-size: 13px; color: var(--ink-dim); }
+/* Autores: etiqueta + un nombre por línea, con guion miel. */
+.authors { margin: -6px 0 0; display: flex; flex-direction: column; gap: 3px; }
+.authors .a-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--honey);
+}
+.authors .a-name { font-size: 13.5px; line-height: 1.35; color: var(--ink); }
+.authors .a-name::before { content: "—  "; color: var(--honey); }
 
 /* El QR y los botones van pegados abajo: así en PC todas las tarjetas
    de una fila quedan alineadas aunque los títulos tengan 1 o 2 líneas. */
@@ -477,15 +489,21 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
 (function () {
   function start() {
     var OBRAS = [
-      { n: 1, t: 'El atardecer', u: 'https://user12345-rgb.github.io/exposicion-atardecer/', a: 'Scott De Los Rios Salinas · José Emiliano Gómez Ramírez · Iker Daniel Huerta Hernandez' },
-      { n: 2, t: 'GoodFellas: Una historia de lealtad y familia', u: 'https://www.canva.com/design/DAHbMH95CDg/jhKmz3T2DFfjD2bhOFbaxA/edit', a: 'Yunuen Celeste Garcia Ramirez · Santiago Pérez Peña · Julio Cesar Méndez Urvina · Luis Angel Velásquez Aguillón' },
-      { n: 3, t: 'Grandes metas grandes amigos', u: 'https://sites.google.com/view/galerafotogrficaconalep2027/página-principal', a: 'Axel Uriel Gómez Robles · Nóe Alexander Lopez Osuna · Carlos Gael Ferrusca Ortíz · Hugo Elías Hernandéz Hernandéz' },
-      { n: 4, t: 'La fuerza de la unión', u: 'https://fotografia-artistica.netlify.app', a: 'Joana Camila Piedra Luna · Lia Marian Escalante Torres · Lilian Ariadna Cruz García · Leslie Camila Moreno Velázquez' },
-      { n: 5, t: 'Genesis', u: 'https://gnosisapp.github.io/genesisobra/#texto', a: 'Luis Leonardo Solis Hernández · Alexis Gabriel Olalde Pacheco · Bruno Bouchan Dé La Vega' },
-      { n: 6, t: 'Distintas miradas; una misma humanidad.', u: 'https://philosophical-link-qr.netlify.app', a: 'Hernández Morales Bárbara Sofia · Quezada Rodríguez Melanie Elizabeth · Montoya Ledezma Alina · Martínez Balderas Denise · Rangel Mendoza Valeria' },
-      { n: 7, t: 'La triste realidad.', u: 'https://stalwart-griffin-b3bd4e.netlify.app', a: 'Lucero · Roberto · Luis Enrique Sánchez Valencia · Natasha Jocelyn García Reynoso · Urrutia' },
-      { n: 8, t: 'Los asustados', u: 'https://muse.ai/s/los-asustados-xoq6x0xkxpxlxyxtxtu/gAcTNpU8ZEx1_znmLpRJ4fIyygGgaWRdP7Ag_tWRSWY', a: 'Santiago Uribe Olvera · Diego Isaac Pérez Villegas · Carlos Miguel Pérez Vázquez' }
+      { n: 1, t: 'El atardecer', u: 'https://user12345-rgb.github.io/exposicion-atardecer/', a: ['Scott De Los Rios Salinas', 'José Emiliano Gómez Ramírez', 'Iker Daniel Huerta Hernandez'] },
+      { n: 2, t: 'GoodFellas: Una historia de lealtad y familia', u: 'https://www.canva.com/design/DAHbMH95CDg/jhKmz3T2DFfjD2bhOFbaxA/edit', a: ['Yunuen Celeste Garcia Ramirez', 'Santiago Pérez Peña', 'Julio Cesar Méndez Urvina', 'Luis Angel Velásquez Aguillón'] },
+      { n: 3, t: 'Grandes metas grandes amigos', u: 'https://sites.google.com/view/galerafotogrficaconalep2027/página-principal', a: ['Axel Uriel Gómez Robles', 'Nóe Alexander Lopez Osuna', 'Carlos Gael Ferrusca Ortíz', 'Hugo Elías Hernandéz Hernandéz'] },
+      { n: 4, t: 'La fuerza de la unión', u: 'https://fotografia-artistica.netlify.app', a: ['Joana Camila Piedra Luna', 'Lia Marian Escalante Torres', 'Lilian Ariadna Cruz García', 'Leslie Camila Moreno Velázquez'] },
+      { n: 5, t: 'Genesis', u: 'https://gnosisapp.github.io/genesisobra/#texto', a: ['Luis Leonardo Solis Hernández', 'Alexis Gabriel Olalde Pacheco', 'Bruno Bouchan Dé La Vega'] },
+      { n: 6, t: 'Distintas miradas; una misma humanidad.', u: 'https://philosophical-link-qr.netlify.app', a: ['Hernández Morales Bárbara Sofia', 'Quezada Rodríguez Melanie Elizabeth', 'Montoya Ledezma Alina', 'Martínez Balderas Denise', 'Rangel Mendoza Valeria'] },
+      { n: 7, t: 'La triste realidad.', u: 'https://stalwart-griffin-b3bd4e.netlify.app', a: ['Lucero Trejo Perez', 'Roberto Isaac Cornejo Resendiz', 'Luis Enrique Sánchez Valencia', 'Natasha Jocelyn García Reynoso', 'Angel Gael Urrutia Nieves'] },
+      { n: 8, t: 'Los asustados', u: 'https://muse.ai/s/los-asustados-xoq6x0xkxpxlxyxtxtu/gAcTNpU8ZEx1_znmLpRJ4fIyygGgaWRdP7Ag_tWRSWY', a: ['Santiago Uribe Olvera', 'Diego Isaac Pérez Villegas', 'Carlos Miguel Pérez Vázquez'] }
     ];
+
+    function authorsHTML(o) {
+      return '<span class="a-label">Autores</span>' + o.a.map(function (n) {
+        return '<span class="a-name">' + esc(n) + '</span>';
+      }).join('');
+    }
 
     function esc(s) {
       return String(s).replace(/[&<>"']/g, function (c) {
@@ -732,7 +750,7 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
       li.innerHTML =
         '<div class="card-top"><span class="num">' + o.n + '</span><span class="host">' + esc(host(o.u)) + '</span></div>' +
         '<h2>' + esc(o.t) + '</h2>' +
-        '<p class="authors">' + esc(o.a) + '</p>' +
+        '<div class="authors">' + authorsHTML(o) + '</div>' +
         '<button class="qr-btn" type="button" aria-label="Ampliar el código QR de ' + esc(o.t) + '"><div class="qr" role="img" aria-label="Código QR de ' + esc(o.t) + '"></div></button>' +
         '<a class="open" href="' + esc(o.u) + '" target="_blank" rel="noopener noreferrer">Abrir obra</a>' +
         '<button class="open dl-btn" type="button">Descargar QR</button>';
@@ -753,7 +771,7 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
       modalObra = o;
       document.getElementById('m-num').textContent = 'Obra ' + o.n + ' de ' + OBRAS.length;
       document.getElementById('m-title').textContent = o.t;
-      document.getElementById('m-authors').textContent = o.a;
+      document.getElementById('m-authors').innerHTML = authorsHTML(o);
       document.getElementById('m-open').href = o.u;
       var box = document.getElementById('m-qr');
       box.setAttribute('aria-label', 'Código QR de ' + o.t);
