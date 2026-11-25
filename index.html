@@ -198,6 +198,38 @@ h1 em { color: var(--honey); font-style: normal; }
   flex: none;
 }
 
+/* Apartado final: QR y compartir de toda la galería */
+.share {
+  margin-top: 34px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.share h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(26px, 5vw, 36px);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.share .lead { margin: 0; max-width: 52ch; }
+.share .qr { width: min(100%, 260px); }
+.share-url {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+  overflow-wrap: anywhere;
+}
+.share-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; width: 100%; }
+.share-actions > * { flex: 1 1 160px; max-width: 260px; }
+
 .card {
   display: flex;
   flex-direction: column;
@@ -410,6 +442,19 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
   </section>
 
   <ul class="grid" id="grid"></ul>
+
+  <div class="sep" aria-hidden="true"><i></i></div>
+  <section class="share glass" id="compartir">
+    <p class="eyebrow">Comparte la galería</p>
+    <h2>La galería completa</h2>
+    <p class="lead">Escanea el código con la cámara del celular para abrir toda la galería, o compártela con quien quieras.</p>
+    <div class="qr" id="g-qr" role="img" aria-label="Código QR de la galería completa"></div>
+    <p class="share-url">obras-cdia.vercel.app</p>
+    <div class="share-actions">
+      <button class="open dl-btn" id="g-dl" type="button">Descargar QR</button>
+      <button class="open" id="g-share" type="button">Compartir galería</button>
+    </div>
+  </section>
 </main>
 
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
@@ -588,7 +633,7 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
         ctx.fillStyle = '#a9692a';
         ctx.font = '700 30px ' + FONT;
         try { ctx.letterSpacing = '6px'; } catch (e) {}
-        ctx.fillText('OBRA ' + o.n, POSTER_M, y);
+        ctx.fillText(o.h || ('OBRA ' + o.n), POSTER_M, y);
         try { ctx.letterSpacing = '0px'; } catch (e) {}
         y += 34 + 18;
 
@@ -708,6 +753,12 @@ html.modal-open { overflow: hidden; scrollbar-gutter: stable; }
       li.querySelector('.qr-btn').addEventListener('click', function () { openModal(o); });
       li.querySelector('.dl-btn').addEventListener('click', function () { downloadQR(o); });
     });
+
+    /* Apartado final: QR y compartir de toda la galería */
+    var GALLERY = { n: 'g', t: 'Galería de Obras', u: 'https://obras-cdia.vercel.app/', h: 'GALERÍA DE OBRAS' };
+    drawQR(document.getElementById('g-qr'), GALLERY.u, 360);
+    document.getElementById('g-dl').addEventListener('click', function () { downloadQR(GALLERY); });
+    document.getElementById('g-share').addEventListener('click', function () { shareObra(GALLERY); });
 
     // Separador elegante entre obras: en móvil va entre cada obra;
     // en tablet y PC, entre cada fila de la rejilla.
